@@ -7,21 +7,43 @@ FakeOS os;
 
 typedef struct {
   int quantum;
-} SchedRRArgs;
+} SchedSJFArgs;
 
-void schedRR(FakeOS* os, void* args_){
-  SchedRRArgs* args=(SchedRRArgs*)args_;
+void schedSJF(FakeOS* os, void* args_){
+  SchedSJFArgs* args=(SchedSJFArgs*)args_;
 
   // look for the first process in ready
   // if none, return
   if (! os->ready.first)
     return;
-
-  FakePCB* pcb=(FakePCB*) List_popFront(&os->ready);
+    
+  ListItem* aux=os->ready.first;
+  FakePCB* pcb=(FakePCB*) aux;
+  ProcessEvent* e = (ProcessEvent*)pcb->events.first;
+  int min = e->duration;
+  aux = aux->next;
+  while (aux) {
+	  FakePCB* pcb=(FakePCB*) aux;
+	  ProcessEvent* e = (ProcessEvent*)pcb->events.first;
+	  if (e->duration < min) {
+		  min = e->duration;
+	  }
+	  aux = aux->next;
+  }
+  
+  aux=os->ready.first;
+  while (aux) {
+	  FakePCB* pcb=(FakePCB*) aux;
+	  ProcessEvent* e = (ProcessEvent*)pcb->events.first;
+	  if (e->duration == min) {
+		  break;
+	  }
+	  aux = aux->next;
+  }
   os->running=pcb;
   
   assert(pcb->events.first);
-  ProcessEvent* e = (ProcessEvent*)pcb->events.first;
+  e = (ProcessEvent*)pcb->events.first;
   assert(e->type==CPU);
 
   // look at the first event
@@ -40,10 +62,10 @@ void schedRR(FakeOS* os, void* args_){
 
 int main(int argc, char** argv) {
   FakeOS_init(&os);
-  SchedRRArgs srr_args;
+  SchedSJFArgs srr_args;
   srr_args.quantum=5;
   os.schedule_args=&srr_args;
-  os.schedule_fn=schedRR;
+  os.schedule_fn=schedSJF;
   
   for (int i=1; i<argc; ++i){
     FakeProcess new_process;

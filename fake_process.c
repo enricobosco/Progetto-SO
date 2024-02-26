@@ -52,7 +52,7 @@ int FakeProcess_load(FakeProcess* p, const char* filename) {
       goto next_round;
     }
   next_round:
-    printf("%stokens: %d\n", buffer, num_tokens);
+    //printf("%stokens: %d\n", buffer, num_tokens);
     ;
   }
   if (buffer)

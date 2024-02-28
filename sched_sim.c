@@ -7,6 +7,8 @@ FakeOS os;
 
 typedef struct {
   int quantum;
+  int quantum_prediction;
+  float a;
 } SchedSJFArgs;
 
 void schedSJF(FakeOS* os, void* args_){
@@ -50,7 +52,11 @@ void schedSJF(FakeOS* os, void* args_){
   // if duration>quantum
   // push front in the list of event a CPU event of duration quantum
   // alter the duration of the old event subtracting quantum
-  if (e->duration>args->quantum) {
+  if (args->quantum_prediction == 0) {
+	  args->quantum_prediction = args->quantum;
+  }
+  
+  if (e->duration>args->quantum_prediction) {
     ProcessEvent* qe=(ProcessEvent*)malloc(sizeof(ProcessEvent));
     qe->list.prev=qe->list.next=0;
     qe->type=CPU;
@@ -58,12 +64,15 @@ void schedSJF(FakeOS* os, void* args_){
     e->duration-=args->quantum;
     List_pushFront(&pcb->events, (ListItem*)qe);
   }
+  args->quantum_prediction = args->a * e->duration + (1-args->a) * args->quantum_prediction;
 };
 
 int main(int argc, char** argv) {
   FakeOS_init(&os);
   SchedSJFArgs srr_args;
   srr_args.quantum=5;
+  srr_args.quantum_prediction = 0;
+  srr_args.a = 0.4;
   os.schedule_args=&srr_args;
   os.schedule_fn=schedSJF;
   

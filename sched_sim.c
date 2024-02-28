@@ -60,11 +60,13 @@ void schedSJF(FakeOS* os, void* args_){
     ProcessEvent* qe=(ProcessEvent*)malloc(sizeof(ProcessEvent));
     qe->list.prev=qe->list.next=0;
     qe->type=CPU;
-    qe->duration=args->quantum;
-    e->duration-=args->quantum;
+    qe->duration=args->quantum_prediction;
+    e->duration-=args->quantum_prediction;
     List_pushFront(&pcb->events, (ListItem*)qe);
   }
+  //printf("%d\n", args->quantum_prediction);
   args->quantum_prediction = args->a * e->duration + (1-args->a) * args->quantum_prediction;
+  //printf("%d\n", args->quantum_prediction);
 };
 
 int main(int argc, char** argv) {
@@ -72,7 +74,7 @@ int main(int argc, char** argv) {
   SchedSJFArgs srr_args;
   srr_args.quantum=5;
   srr_args.quantum_prediction = 0;
-  srr_args.a = 0.4;
+  srr_args.a = 0.1;
   os.schedule_args=&srr_args;
   os.schedule_fn=schedSJF;
   

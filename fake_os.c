@@ -6,7 +6,7 @@
 int n = 3;
 
 void FakeOS_init(FakeOS* os) {
-  int i = 0;
+  //int i = 0;
   os->running=(FakePCB*) malloc(sizeof(FakePCB)*n);
   List_init(&os->ready);
   List_init(&os->waiting);
@@ -68,7 +68,7 @@ void FakeOS_createProcess(FakeOS* os, FakeProcess* p) {
 
 
 void FakeOS_simStep(FakeOS* os){
-  if (os->timer > 50) exit(EXIT_SUCCESS);;
+  //if (os->timer > 50) exit(EXIT_SUCCESS);;
   
   printf("************** TIME: %08d **************\n", os->timer);
 

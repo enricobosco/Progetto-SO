@@ -72,11 +72,14 @@ void schedSJF(FakeOS* os, void* args_, int i){
 int main(int argc, char** argv) {
   FakeOS_init(&os);
   SchedSJFArgs srr_args;
-  srr_args.quantum=5;
+  printf("Inserisci quantum: ");
+  scanf("%d", &srr_args.quantum);
   srr_args.quantum_prediction = 0;
-  srr_args.a = 0.1;
+  printf("Inserisci a: ");
+  scanf("%f", &srr_args.a);
   os.schedule_args=&srr_args;
   os.schedule_fn=schedSJF;
+
   
   for (int i=1; i<argc; ++i){
     FakeProcess new_process;
@@ -90,7 +93,7 @@ int main(int argc, char** argv) {
     }
   }
   printf("num processes in queue %d\n", os.processes.size);
-  while(os.running
+  while(os.running[0]
         || os.ready.first
         || os.waiting.first
         || os.processes.first){

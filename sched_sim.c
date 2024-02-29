@@ -11,7 +11,7 @@ typedef struct {
   float a;
 } SchedSJFArgs;
 
-void schedSJF(FakeOS* os, void* args_){
+void schedSJF(FakeOS* os, void* args_, int i){
   SchedSJFArgs* args=(SchedSJFArgs*)args_;
 
   // look for the first process in ready
@@ -42,7 +42,7 @@ void schedSJF(FakeOS* os, void* args_){
 	  }
 	  aux = aux->next;
   }
-  os->running=pcb;
+  os->running[i]=pcb;
   
   assert(pcb->events.first);
   e = (ProcessEvent*)pcb->events.first;

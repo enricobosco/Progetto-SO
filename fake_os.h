@@ -10,10 +10,10 @@ typedef struct {
 } FakePCB;
 
 struct FakeOS;
-typedef void (*ScheduleFn)(struct FakeOS* os, void* args);
+typedef void (*ScheduleFn)(struct FakeOS* os, void* args, int i);
 
 typedef struct FakeOS{
-  FakePCB* running;
+  FakePCB** running;
   ListHead ready;
   ListHead waiting;
   int timer;

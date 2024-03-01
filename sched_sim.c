@@ -70,15 +70,23 @@ void schedSJF(FakeOS* os, void* args_, int i){
 };
 
 int main(int argc, char** argv) {
+  int n;
+  printf("Inserisci numero CPU: ");
+  scanf("%d", &n);
+  os.NUM_CPU = n;
   FakeOS_init(&os);
   SchedSJFArgs srr_args;
+  //int n;
   printf("Inserisci quantum: ");
   scanf("%d", &srr_args.quantum);
   srr_args.quantum_prediction = 0;
   printf("Inserisci a: ");
   scanf("%f", &srr_args.a);
+  //printf("Inserisci numero CPU: ");
+  //scanf("%d", &n);
   os.schedule_args=&srr_args;
   os.schedule_fn=schedSJF;
+  //os.NUM_CPU = n;
 
   
   for (int i=1; i<argc; ++i){
@@ -99,4 +107,5 @@ int main(int argc, char** argv) {
         || os.processes.first){
     FakeOS_simStep(&os);
   }
+  printf("FINISHED\n");
 }

@@ -3,11 +3,12 @@
 #include <assert.h>
 
 #include "fake_os.h"
-int n = 3;
+//int n = 5;
 
 void FakeOS_init(FakeOS* os) {
   //int i = 0;
-  os->running=(FakePCB*) malloc(sizeof(FakePCB)*n);
+  int n = os->NUM_CPU;
+  os->running=(FakePCB**) malloc(sizeof(FakePCB*)*n);
   List_init(&os->ready);
   List_init(&os->waiting);
   List_init(&os->processes);
@@ -16,16 +17,19 @@ void FakeOS_init(FakeOS* os) {
 }
 
 void FakeOS_createProcess(FakeOS* os, FakeProcess* p) {
+  int n = os->NUM_CPU;
+  //printf("Checkpoint\n");
   // sanity check
   assert(p->arrival_time==os->timer && "time mismatch in creation");
   // we check that in the list of PCBs there is no
   // pcb having the same pid
   int i = 0;
+  //printf("Checkpoint\n");
   while (i < n) {
 	assert( (!os->running[i] || os->running[i]->pid!=p->pid) && "pid taken");
 	i++;
   }
-
+  //printf("Checkpoint\n");
   ListItem* aux=os->ready.first;
   while(aux){
     FakePCB* pcb=(FakePCB*)aux;
@@ -68,6 +72,7 @@ void FakeOS_createProcess(FakeOS* os, FakeProcess* p) {
 
 
 void FakeOS_simStep(FakeOS* os){
+  int n = os->NUM_CPU;
   //if (os->timer > 50) exit(EXIT_SUCCESS);;
   
   printf("************** TIME: %08d **************\n", os->timer);
@@ -84,9 +89,11 @@ void FakeOS_simStep(FakeOS* os){
     aux=aux->next;
     if (new_process) {
       printf("\tcreate pid:%d\n", new_process->pid);
+      //printf("Checkpoint\n");
       new_process=(FakeProcess*)List_detach(&os->processes, (ListItem*)new_process);
       FakeOS_createProcess(os, new_process);
       free(new_process);
+      //printf("Checkpoint\n");
     }
   }
 
@@ -132,6 +139,7 @@ void FakeOS_simStep(FakeOS* os){
   // if event over, destroy event
   // and reschedule process
   // if last event, destroy running
+  //printf("Checkpoint\n");
   int i = 0;
   while(i < n) {
   FakePCB* running=os->running[i];

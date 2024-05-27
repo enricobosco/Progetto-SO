@@ -21,27 +21,20 @@ void schedSJF(FakeOS* os, void* args_, int i){
     
   ListItem* aux=os->ready.first;
   FakePCB* pcb=(FakePCB*) aux;
+  FakePCB* pcb1=(FakePCB*) aux;
   ProcessEvent* e = (ProcessEvent*)pcb->events.first;
   int min = e->duration;
-  while (aux) {
-	  FakePCB* pcb1=(FakePCB*) aux;
-	  ProcessEvent* e1 = (ProcessEvent*)pcb1->events.first;
-	  if (e1->duration < min && e1->type == CPU) {
-		  min = e1->duration;
-	  }
-	  aux = aux->next;
-  }
   
-  aux=os->ready.first;
   while (aux) {
 	  pcb=(FakePCB*) aux;
 	  e = (ProcessEvent*)pcb->events.first;
-	  if (e->duration == min && e->type == CPU) {
-		  pcb = (FakePCB*) List_detach(&os->ready, (ListItem*) pcb);
-		  break;
+	  if (e->duration < min && e->type == CPU) {
+		  min = e->duration;
+		  pcb1 = (FakePCB*) List_find(&os->ready, (ListItem*) pcb);
 	  }
 	  aux = aux->next;
   }
+  pcb = (FakePCB*) List_detach(&os->ready, (ListItem*) pcb1);
   os->running[i]=pcb;
   
   assert(pcb->events.first);

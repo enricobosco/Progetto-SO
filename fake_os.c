@@ -49,6 +49,7 @@ void FakeOS_createProcess(FakeOS* os, FakeProcess* p) {
   new_pcb->list.next=new_pcb->list.prev=0;
   new_pcb->pid=p->pid;
   new_pcb->events=p->events;
+  new_pcb->quantum_prediction=0;
 
   assert(new_pcb->events.first && "process without events");
 

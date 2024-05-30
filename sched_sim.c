@@ -7,7 +7,6 @@ FakeOS os;
 
 typedef struct {
   int quantum;
-  int quantum_prediction;
   float a;
 } SchedSJFArgs;
 
@@ -45,21 +44,21 @@ void schedSJF(FakeOS* os, void* args_, int i){
   // if duration>quantum
   // push front in the list of event a CPU event of duration quantum
   // alter the duration of the old event subtracting quantum
-  if (args->quantum_prediction == 0) {
-	  args->quantum_prediction = args->quantum;
+  if (pcb->quantum_prediction == 0) {
+	  pcb->quantum_prediction = args->quantum;
   }
   
-  if (e->duration>args->quantum_prediction) {
+  if (e->duration>pcb->quantum_prediction) {
     ProcessEvent* qe=(ProcessEvent*)malloc(sizeof(ProcessEvent));
     qe->list.prev=qe->list.next=0;
     qe->type=CPU;
-    qe->duration=args->quantum_prediction;
-    e->duration-=args->quantum_prediction;
+    qe->duration=pcb->quantum_prediction;
+    e->duration-=pcb->quantum_prediction;
     List_pushFront(&pcb->events, (ListItem*)qe);
   }
-  //printf("%d\n", args->quantum_prediction);
-  args->quantum_prediction = args->a * e->duration + (1-args->a) * args->quantum_prediction;
-  //printf("%d\n", args->quantum_prediction);
+  printf("%f\n", pcb->quantum_prediction);
+  pcb->quantum_prediction = args->a * e->duration + (1-args->a) * pcb->quantum_prediction;
+  printf("%f\n", pcb->quantum_prediction);
 };
 
 int main(int argc, char** argv) {
@@ -72,7 +71,6 @@ int main(int argc, char** argv) {
   //int n;
   printf("Inserisci quantum: ");
   scanf("%d", &srr_args.quantum);
-  srr_args.quantum_prediction = 0;
   printf("Inserisci a: ");
   scanf("%f", &srr_args.a);
   //printf("Inserisci numero CPU: ");

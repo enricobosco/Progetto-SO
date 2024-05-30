@@ -6,6 +6,7 @@ typedef struct {
   ListItem list;
   int pid;
   ListHead events;
+  float quantum_prediction;
 } FakePCB;
 
 struct FakeOS;

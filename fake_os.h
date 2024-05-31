@@ -26,3 +26,5 @@ typedef struct FakeOS{
 void FakeOS_init(FakeOS* os);
 void FakeOS_simStep(FakeOS* os);
 void FakeOS_destroy(FakeOS* os);
+
+int isEmpty(FakePCB** running, int size);

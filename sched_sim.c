@@ -10,6 +10,15 @@ typedef struct {
   float a;
 } SchedSJFArgs;
 
+int isEmpty(FakePCB** running, int size) {
+	int i = 0;
+	while (i < size) {
+		if (running[i]) return 0;
+		i++;
+	}
+	return 1;
+}
+
 void schedSJF(FakeOS* os, void* args_, int i){
   SchedSJFArgs* args=(SchedSJFArgs*)args_;
 
@@ -92,7 +101,7 @@ int main(int argc, char** argv) {
     }
   }
   printf("num processes in queue %d\n", os.processes.size);
-  while(os.running[0]
+  while((isEmpty(os.running, n) == 0)
         || os.ready.first
         || os.waiting.first
         || os.processes.first){

@@ -150,7 +150,7 @@ void FakeOS_simStep(FakeOS* os){
 		assert(e->type==CPU);
 		e->duration--;
 		printf("\t\tremaining time:%d\n",e->duration);
-		if (e->duration==0){
+		if (e->duration<=0){
 		  printf("\t\tend burst\n");
 		  List_popFront(&running->events);
 		  free(e);
